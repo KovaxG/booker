@@ -44,19 +44,18 @@ breakEven n b po a pm =
  
 printReport :: Report -> IO ()
 printReport r = do
-    putStrLn "=====Report======"
-    putStrLn $ "Monthly Cost: " ++ show (montlyCost r)
-    putStrLn $ "PerItemCost: " ++ show (perItemCost r)
-    putStrLn $ "ItemsCost: " ++ show (itemCost r)
-    putStrLn   "---------------------------"
-    putStrLn $ "TotalCost: " ++ show (totalCost r)
-    putStrLn ""
-    putStrLn $ "PerItemIncome: " ++ show (perItemIncome r)
-    putStrLn $ "Income:    " ++ show (totalIncome r)
-    putStrLn ""
-    putStrLn $ "Profit per fresh: " ++ show (profitPerFresh r)
-    putStrLn $ "Profit:    " ++ show (profit r)
-    putStrLn ""
-    putStrLn $ "Breakeven price: " ++ show (breakEvenPrice r)
-    putStrLn "================="
- 
+    putStrLn   "===============Report================="
+    putStrLn   "--------------------------------------"
+    putStrLn $ "- Honapos Szogezett kiadas: " ++ show (montlyCost r)    
+    putStrLn $ "- Osszes freshek gyartasi ara (+tva): " ++ show (itemCost r)
+    putStrLn $ "  (Egy freshnek a gyartasi ara (+tva): " ++ show (perItemCost r) ++ ")"
+    putStrLn $ "- Osszes kiadas: " ++ show (totalCost r)
+    putStrLn   "--------------------------------------"
+    putStrLn $ "+ Osszes bevetel:    " ++ show (totalIncome r)
+    putStrLn $ "  (Egy freshbeli bevetel: " ++ show (perItemIncome r) ++ ")"
+    putStrLn   "--------------------------------------"
+    putStrLn $ "$ Profit egy freshnel: " ++ show (profitPerFresh r)
+    putStrLn $ "$ Profit:    " ++ show (profit r)
+    putStrLn   "--------------------------------------"
+    putStrLn $ "Ennyibe kene adni, hogy nullan legyel: " ++ show (breakEvenPrice r)
+    putStrLn   "======================================"

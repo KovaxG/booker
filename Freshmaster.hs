@@ -14,15 +14,16 @@ module Main where
 import Text.Read
 import Report
 import Utils
+import System.IO -- I need to flush the buffer
 
-batchPrice :: CurrentPrice -> RentPrice -> OtherMontlyCost -> Money
-batchPrice cp rp oc = cp $+$ rp $+$ oc
+batchPrice :: RentPrice -> OtherMontlyCost -> Money
+batchPrice rp oc = rp $+$ oc
 
 freshPrice :: CupPrice -> FruitPrice -> Money
 freshPrice cp fp = cp $+$ fp 
 
 testData = calcMonth 
-    (batchPrice (Ron 1000) (Ron 2500) (Ron 500))
+    (batchPrice (Ron 2500) (Ron 500))
     (freshPrice (Ron 0.5) (Ron 6))
     1500
     (Ron 14)
@@ -30,12 +31,12 @@ testData = calcMonth
         
 main :: IO ()
 main = do
+    hSetBuffering stdout NoBuffering
     displayStartScreen
 
     rent <- askForRent
-    current <- askForCurrent
     other <- askForOtherMonth
-    let bp = batchPrice current rent other
+    let bp = batchPrice rent other
 
     fruitCost <- askForFruitCost
     cupCost <- askForCupCost
@@ -48,17 +49,18 @@ main = do
     let report = calcMonth bp fp customers currentPrice 0.09
     printReport report
     
+    putStrLn "\n\nNyomj meg egy gombot hogy ujra kezdjuk."
+    _ <- getLine
+    putStrLn "\n"
+    main
+    
 askForRent :: IO RentPrice
 askForRent = 
     askFor "Mennyi a ber egy honapra?" Ron
-    
-askForCurrent :: IO CurrentPrice
-askForCurrent = 
-    askFor "Mennyi az aram egy honapra?" Ron
 
 askForOtherMonth :: IO OtherMontlyCost
 askForOtherMonth = 
-    askFor "Mennyi penz megy meg el egy honapban?" Ron
+    askFor "Mennyi koltseg van meg a honapban?" Ron
     
 askForFruitCost :: IO FruitPrice
 askForFruitCost =
@@ -78,9 +80,14 @@ askForCurrentPrice =
    
 askFor :: Read a => String -> (a -> b) -> IO b
 askFor descr f = do
-    putStrLn descr
+    putStrLn $ descr
+    putStr "> "
     value <- readMaybe <$> getLine
-    maybe (askFor descr f) (return . f) value
+    maybe wrongInput (return . f) value
+    where
+        wrongInput = do
+            putStrLn "Kerlek irj egy szamot."
+            askFor descr f
 
 displayStartScreen :: IO ()
 displayStartScreen = do

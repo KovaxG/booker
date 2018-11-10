@@ -1,11 +1,18 @@
 module Utils where
 
+import Text.Printf
+
 type TVA = Double
 
-newtype Money = Ron Double deriving (Show, Read)
+newtype Money = Ron Double deriving (Read)
 
+instance Show Money where
+    show = doubleShow
+
+doubleShow :: Money -> String
+doubleShow (Ron d) = printf "%.2f lej" d
+    
 -- TODO might want to enforce in type monthly and per item scores
-type CurrentPrice = Money
 type RentPrice = Money
 type OtherMontlyCost = Money
 
